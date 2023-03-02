@@ -27,7 +27,7 @@ const TYPES = [
   'bungalow или hotel',
 ];
 
-const CHEKS = [
+const CHECKS = [
   '12:00',
   '13:00',
   '14:00'
@@ -57,26 +57,30 @@ const PHOTOS = [
 ];
 
 const getLocation = () => {
-  return {
-    lat: getCoordinates(35.65000, 35.70000),
-    lng: getCoordinates(139.70000, 139.80000),
-  };
+  {
+    return {
+      lat: getCoordinates(35.65000, 35.70000),
+      lng: getCoordinates(139.70000, 139.80000),
+    };
+  }
 };
 
 const createOffer = (location) => {
-  return {
-    title: getRandomArrayElement(TITLES),
-    address: `{${location.lat}}, {${location.lng}}`,
-    price: getRandomNum(100, 10000),
-    type: getRandomArrayElement(TYPES),
-    rooms: getRandomNum(1, 10),
-    guests: getRandomNum(1,100),
-    checkin: getRandomArrayElement(CHEKS),
-    checkout: getRandomArrayElement(CHEKS),
-    features: FEATURES.slice(getRandomNum(0, FEATURES.length - 1) , getRandomNum(1, FEATURES.length - 1)),
-    description: getRandomArrayElement(DESCRIPTIONS),
-    photos: PHOTOS.slice(0, getRandomNum(1, FEATURES.length - 1)),
-  };
+  {
+    return {
+      title: getRandomArrayElement(TITLES),
+      address: `{${location.lat}}, {${location.lng}}`,
+      price: getRandomNum(100, 10000),
+      type: getRandomArrayElement(TYPES),
+      rooms: getRandomNum(1, 10),
+      guests: getRandomNum(1,100),
+      checkin: getRandomArrayElement(CHECKS),
+      checkout: getRandomArrayElement(CHECKS),
+      features: FEATURES.slice(getRandomNum(0, FEATURES.length - 1) , getRandomNum(1, FEATURES.length - 1)),
+      description: getRandomArrayElement(DESCRIPTIONS),
+      photos: PHOTOS.slice(0, getRandomNum(1, FEATURES.length - 1)),
+    };
+  }
 };
 
 let numberPic = 0;
