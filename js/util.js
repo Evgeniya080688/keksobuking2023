@@ -64,7 +64,9 @@ const getCoordinates = (min, max, signs = 1) => {
 };
 
 const getRandomArrayElement = (elements) => {
-  return elements[getRandomNum(0, elements.length - 1)];
+  {
+    return elements[getRandomNum(0, elements.length - 1)];
+  }
 };
 
 export { getRandomNum, getCoordinates, getRandomArrayElement };

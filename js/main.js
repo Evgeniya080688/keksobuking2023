@@ -1,3 +1,6 @@
 import { similarAdvert } from './data.js';
 
-console.log(similarAdvert(10));
+console.log(
+  similarAdvert(10)
+);
+

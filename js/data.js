@@ -91,11 +91,9 @@ const createAdvert = () => {
   };
 };
 
-console.log(createAdvert());
-
-const similarAdvert = (count) => {
-  Array.from({length: count}, createAdvert);
-};
-console.log(similarAdvert(10));
+const similarAdvert = (count) =>
+  Array.from({length: count}, () =>
+    createAdvert()
+  );
 
 export { similarAdvert };
