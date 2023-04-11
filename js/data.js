@@ -5,7 +5,7 @@ const getPicture = (number) => {
     number = `0${String(number)}`;
   }
   {
-    return `img/avatars/user${number}.png`;
+    return {avatar: `img/avatars/user${number}.png`} ;
   }
 };
 
@@ -24,7 +24,8 @@ const TYPES = [
   'palace',
   'flat',
   'house',
-  'bungalow или hotel',
+  'bungalow',
+  'hotel',
 ];
 
 const CHECKS = [
@@ -76,7 +77,7 @@ const createOffer = (location) => {
       guests: getRandomNum(1,100),
       checkin: getRandomArrayElement(CHECKS),
       checkout: getRandomArrayElement(CHECKS),
-      features: FEATURES.slice(getRandomNum(0, FEATURES.length - 1) , getRandomNum(1, FEATURES.length - 1)),
+      features: FEATURES.slice(getRandomNum(0, FEATURES.length - 1) , getRandomNum(0, FEATURES.length )),
       description: getRandomArrayElement(DESCRIPTIONS),
       photos: PHOTOS.slice(0, getRandomNum(1, FEATURES.length - 1)),
     };
