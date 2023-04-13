@@ -1,6 +1,8 @@
-import { similarAdvert } from './data.js';
-import './cards.js';
+import { listAdvert } from './data.js';
+import { renderAdverts } from './cards.js';
+import { activateForm, desactivateForm } from './formact.js';
 
-console.log(
-  similarAdvert(10)
-);
+const advertisements = listAdvert(10);
+console.log(advertisements);
+renderAdverts(advertisements);
+activateForm();

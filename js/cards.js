@@ -1,14 +1,10 @@
-import {similarAdvert} from './data.js';
-
 const cardTemplate = document.querySelector('#card')
   .content
   .querySelector('.popup');
 
-const similarAdvent = similarAdvert(10);
+const map = document.querySelector('#map-canvas');
 
-const cardsListFragment = document.createDocumentFragment();
-
-similarAdvent.forEach(({offer, author}) => {
+const createAdvert = ({offer, author}) => {
   const cardElement = cardTemplate.cloneNode(true);
   const features = offer.features;
   const featuresContainer = cardElement.querySelector('.popup__features');
@@ -55,15 +51,28 @@ similarAdvent.forEach(({offer, author}) => {
   const photosList = cardElement.querySelector('.popup__photos');
   const imgEl = photosList.querySelector('img');
   const photos = offer.photos;
-  photosList.innerHTML = '';
-  photos.forEach((photo) => {
-    const newImg = imgEl.cloneNode();
-    newImg.src = photo;
-    photosList.appendChild(newImg);
-  });
-  cardsListFragment.appendChild(cardElement);
-});
+  if (photos.length === 0) {
+    photosList.style.display = 'none';
+  } else {
+    photosList.innerHTML = '';
+    photos.forEach((photo) => {
+      const newImg = imgEl.cloneNode();
+      newImg.src = photo;
+      photosList.appendChild(newImg);
+    });
+  }
+  return cardElement;
+};
 
-console.log( cardsListFragment);
-let map = document.querySelector('#map-canvas');
-map.appendChild(cardsListFragment.children[5]);
+const renderAdverts = (advertsList) => {
+  const fragment = document.createDocumentFragment();
+  advertsList.forEach((advertisement) => {
+    const advertElement = createAdvert(advertisement);
+    fragment.append(advertElement);
+  });
+
+  map.append(fragment.children[5]);
+};
+
+export {renderAdverts};
+

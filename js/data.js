@@ -87,7 +87,7 @@ const createOffer = (location) => {
 let numberPic = 0;
 
 const createAdvert = () => {
-  numberPic++;
+  numberPic = (numberPic < 11) ? ++numberPic: 1;
   const locationCurrent = getLocation();
   return {
     author: getPicture(numberPic),
@@ -96,9 +96,9 @@ const createAdvert = () => {
   };
 };
 
-const similarAdvert = (count) =>
+const listAdvert = (count) =>
   Array.from({length: count}, () =>
     createAdvert()
   );
 
-export { similarAdvert };
+export { listAdvert };
