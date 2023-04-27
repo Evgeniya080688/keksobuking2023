@@ -270,9 +270,36 @@ fieldset {
   pointer-events: none;
 }
 
+.ad-form__item--invalid {
+  input {
+    border: red;
+  }
+  input:focus {
+    box-shadow: 0 0 2px 2px #389100;
+  }
+  input:hover {
+    border-color: #389100;
+  }
+}
+
+.form__item--valid.ad-form__element input{
+  input {
+    border: green;
+  }
+}
+
+.ad-form__error {
+  color: red;
+  font-size: 1em;
+}
+
 .ad-form-header {
   width: 100%;
   padding-bottom: 20px;
+}
+
+.ad-form__slider {
+  width: calc(100% - 20px);
 }
 
 .ad-form-header__title {
