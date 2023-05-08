@@ -41,6 +41,7 @@ const pristine = new Pristine(adForm, {
 });
 //valid address
 const address = adForm.querySelector('#address');
+address.value = '35.40942, 139.36349';
 address.readOnly = true;
 
 //valid title
@@ -95,20 +96,37 @@ const priceNight = adForm.querySelector('#price');
 const slider = adForm.querySelector('.ad-form__slider');
 noUiSlider.create(slider, {
   start: 5000,
+  step: 1,
   connect: 'lower',
   range: {
     'min': 0,
     'max': 100000
+  },
+  format: {
+    to: function (value) {
+      return value.toFixed(0);
+    },
+    from: function (value) {
+      return parseFloat(value);
+    },
   }
 });
 
-slider.noUiSlider.on('update', function (values, handle) { // при изменений положения элементов управления слайдера изменяем соответствующие значения
-  priceNight.value = parseInt(values[handle], 10);
+slider.noUiSlider.on('update', () => { // при изменений положения элементов управления слайдера изменяем соответствующие значения
+  priceNight.value = slider.noUiSlider.get();
 });
 
+//slider.setAttribute('disabled', true);
+
+// slider.removeAttribute('disabled');
+
 priceNight.addEventListener('change', function () { // при изменении меньшего значения в input - меняем положение соответствующего элемента управления
-  slider.noUiSlider.set([this.value, null]);
+  slider.noUiSlider.set(this.value);
 });
+
+priceNight.oninput = function() {
+  slider.noUiSlider.set(priceNight.value);
+};
 
 const typeLiving = adForm.querySelector('#type');
 const typePrice = {
@@ -140,6 +158,7 @@ function messageType () {
 function onTypeChange (value) {
   priceNight.placeholder = typePrice[this.value];
   priceNight.value = typePrice[this.value];
+  slider.noUiSlider.set([priceNight.value, null]);
   pristine.validate(priceNight);
 }
 
@@ -172,4 +191,6 @@ adForm.addEventListener('submit', (evt) => {
   pristine.validate();
 });
 
-export {activateForm, desactivateForm};
+desactivateForm();
+
+export {adForm, address, activateForm, desactivateForm};

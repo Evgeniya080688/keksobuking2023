@@ -71,7 +71,7 @@ const renderAdverts = (advertsList) => {
     fragment.append(advertElement);
   });
 
-  map.append(fragment.children[5]);
+  //map.append(fragment.children[5]);
 };
 
 export {renderAdverts};
