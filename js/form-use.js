@@ -41,7 +41,7 @@ const pristine = new Pristine(adForm, {
 });
 //valid address
 const address = adForm.querySelector('#address');
-address.value = '35.40942, 139.36349';
+address.value = '35.60439, 139.74142';
 address.readOnly = true;
 
 //valid title

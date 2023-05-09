@@ -31,7 +31,7 @@ const getRandomNum = (min, max) => {
   }
 };
 
-const getCoordinates = (min, max, signs = 1) => {
+const getCoordinates = (min, max, signs = 5) => {
   try {
     if (min > max) {
       const oldMin = min;
