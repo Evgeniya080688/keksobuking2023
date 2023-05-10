@@ -2,8 +2,6 @@ const cardTemplate = document.querySelector('#card')
   .content
   .querySelector('.popup');
 
-const map = document.querySelector('#map-canvas');
-
 const createAdvert = ({offer, author}) => {
   const cardElement = cardTemplate.cloneNode(true);
   const features = offer.features;
@@ -42,6 +40,10 @@ const createAdvert = ({offer, author}) => {
       featureListItem.remove();
     }
   });
+  if (!cardElement.querySelector('.popup__feature')) {
+    cardElement.querySelector('.popup__features').remove();
+  }
+
   if (offer.description !== '') {
     cardElement.querySelector('.popup__description').textContent = offer.description;
   } else {
@@ -74,5 +76,5 @@ const renderAdverts = (advertsList) => {
   //map.append(fragment.children[5]);
 };
 
-export {renderAdverts};
+export {renderAdverts, createAdvert};
 

@@ -1,15 +1,15 @@
 import {address, activateForm} from './form-use.js';
 import { listAdvert } from './data.js';
-import {renderAdverts} from './cards.js';
+import {createAdvert} from "./cards.js";
 
 const map = L.map('map-canvas')
   .on('load', () => {
     activateForm();
   })
   .setView({
-    lat: 35.41,
-    lng:  139.36,
-  }, 10);
+    lat: 35.65422,
+    lng: 139.76305,
+  }, 12);
 
 const myIcon = L.icon({
   iconUrl: 'img/main-pin.svg',
@@ -37,7 +37,6 @@ marker.on('moveend', (evt) => {
 
 const advertisements = listAdvert(10);
 console.log(advertisements);
-//renderAdverts(advertisements);
 
 const simpleIcon = L.icon({
   iconUrl: 'img/pin.svg',
@@ -56,20 +55,21 @@ advertisements.forEach(({location,offer})=>{
   };
   points.push(point);
 });
-console.log(points);
 
-points.forEach(({lat, lng}) => {
+advertisements.forEach(({author, offer, location}) => {
   const markerSimple = L.marker(
     {
-      lat,
-      lng,
+      lat:location.lat,
+      lng: location.lng,
     },
     {
       icon: simpleIcon
     },
   );
 
-  markerSimple.addTo(map);
+  markerSimple
+    .addTo(map)
+    .bindPopup(createAdvert({offer,author}));
 });
 
 export {map};
