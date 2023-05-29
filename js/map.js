@@ -1,6 +1,6 @@
 import {address, activateForm} from './form-use.js';
 import { listAdvert } from './data.js';
-import {createAdvert} from "./cards.js";
+import {createAdvert} from './cards.js';
 
 const map = L.map('map-canvas')
   .on('load', () => {
@@ -45,21 +45,12 @@ const simpleIcon = L.icon({
   popupAnchor: [-3, -76]
 });
 
-const points = [];
+const markerGroup = L.layerGroup().addTo(map);
 
-advertisements.forEach(({location,offer})=>{
-  const point = {
-    title: offer.title,
-    lat: location.lat,
-    lng: location.lng
-  };
-  points.push(point);
-});
-
-advertisements.forEach(({author, offer, location}) => {
+const createMarker = ({author, offer, location}) => {
   const markerSimple = L.marker(
     {
-      lat:location.lat,
+      lat: location.lat,
       lng: location.lng,
     },
     {
@@ -68,8 +59,14 @@ advertisements.forEach(({author, offer, location}) => {
   );
 
   markerSimple
-    .addTo(map)
+    .addTo(markerGroup)
     .bindPopup(createAdvert({offer,author}));
+};
+
+advertisements.forEach((advert) => {
+  createMarker(advert);
 });
+
+//markerGroup.clearLayers();
 
 export {map};
