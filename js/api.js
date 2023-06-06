@@ -1,9 +1,24 @@
+import { showAlert} from './util.js';
 
 const getData = (onSuccess) => {
-  fetch('https://25.javascript.pages.academy/keksobooking/data')
-    .then((response) => response.json())
+  fetch(
+    'https://25.javascript.pages.academy/kekksobooking/data',
+    {
+      method: 'GET',
+      credentials: 'same-origin',
+    },
+  )
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+      showAlert('Ошибка сервера!');
+    })
     .then((neighbors) => {
       onSuccess(neighbors);
+    })
+    .catch(() => {
+      showAlert('Ошибка сервера!');
     });
 };
 
