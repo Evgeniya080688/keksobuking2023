@@ -1,6 +1,8 @@
 import {address, activateForm} from './form-use.js';
-import { listAdvert } from './data.js';
-import {createAdvert} from './cards.js';
+import {getData} from './api.js';
+import {renderAdvert} from './cards.js';
+
+const NEIGHBORS = 10;
 
 const map = L.map('map-canvas')
   .on('load', () => {
@@ -35,16 +37,6 @@ marker.on('moveend', (evt) => {
   address.value = `${evt.target.getLatLng().lat.toFixed(5)}, ${evt.target.getLatLng().lng.toFixed(5)}`;
 });
 
-const advertisements = listAdvert(10);
-console.log(advertisements);
-
-const simpleIcon = L.icon({
-  iconUrl: 'img/pin.svg',
-  iconSize: [38, 95],
-  iconAnchor: [22, 94],
-  popupAnchor: [-3, -76]
-});
-
 const markerGroup = L.layerGroup().addTo(map);
 
 const createMarker = ({author, offer, location}) => {
@@ -60,11 +52,26 @@ const createMarker = ({author, offer, location}) => {
 
   markerSimple
     .addTo(markerGroup)
-    .bindPopup(createAdvert({offer,author}));
+    .bindPopup(renderAdvert({offer,author}));
 };
 
-advertisements.forEach((advert) => {
-  createMarker(advert);
+const renderNeighbors = (adverts) => {
+  adverts.forEach((advert) => {
+    createMarker(advert);
+  });
+};
+
+const advertisements = getData((neighbors) => {
+  renderNeighbors(neighbors.slice(0, NEIGHBORS));
+});
+
+console.log(advertisements);
+
+const simpleIcon = L.icon({
+  iconUrl: 'img/pin.svg',
+  iconSize: [38, 95],
+  iconAnchor: [22, 94],
+  popupAnchor: [-3, -76]
 });
 
 //markerGroup.clearLayers();

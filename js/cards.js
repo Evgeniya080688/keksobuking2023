@@ -2,7 +2,7 @@ const cardTemplate = document.querySelector('#card')
   .content
   .querySelector('.popup');
 
-const createAdvert = ({offer, author}) => {
+const renderAdvert = ({offer, author}) => {
   const cardElement = cardTemplate.cloneNode(true);
   const features = offer.features;
   const featuresContainer = cardElement.querySelector('.popup__features');
@@ -31,15 +31,18 @@ const createAdvert = ({offer, author}) => {
   }
   cardElement.querySelector('.popup__text--capacity').textContent = `${offer.rooms} комнаты для ${offer.guests} гостей`;
   cardElement.querySelector('.popup__text--time').textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`;
-  featuresList.forEach(( featureListItem ) => {
-    const newFeature = features.some(
-      (feature) => featureListItem.classList.contains(`popup__feature--${feature}`),
-    );
+  if (features) {
+    featuresList.forEach(( featureListItem ) => {
+      const newFeature = features.some(
+        (feature) => featureListItem.classList.contains(`popup__feature--${feature}`),
+      );
 
-    if (!newFeature) {
-      featureListItem.remove();
-    }
-  });
+      if (!newFeature) {
+        featureListItem.remove();
+      }
+    });
+  }
+
   if (!cardElement.querySelector('.popup__feature')) {
     cardElement.querySelector('.popup__features').remove();
   }
@@ -53,7 +56,7 @@ const createAdvert = ({offer, author}) => {
   const photosList = cardElement.querySelector('.popup__photos');
   const imgEl = photosList.querySelector('img');
   const photos = offer.photos;
-  if (photos.length === 0) {
+  if (!photos) {
     photosList.style.display = 'none';
   } else {
     photosList.innerHTML = '';
@@ -66,15 +69,15 @@ const createAdvert = ({offer, author}) => {
   return cardElement;
 };
 
-const renderAdverts = (advertsList) => {
-  const fragment = document.createDocumentFragment();
-  advertsList.forEach((advertisement) => {
-    const advertElement = createAdvert(advertisement);
-    fragment.append(advertElement);
-  });
+// const renderAdverts = (advertsList) => {
+//   const fragment = document.createDocumentFragment();
+//   advertsList.forEach((advertisement) => {
+//     const advertElement = createAdvert(advertisement);
+//     fragment.append(advertElement);
+//   });
+//
+//   //map.append(fragment.children[5]);
+// };
 
-  //map.append(fragment.children[5]);
-};
-
-export {renderAdverts, createAdvert};
+export {renderAdvert};
 
