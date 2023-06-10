@@ -1,8 +1,5 @@
 import {address, activateForm} from './form-use.js';
-import {getData} from './api.js';
 import {renderAdvert} from './cards.js';
-
-const NEIGHBORS = 10;
 
 const map = L.map('map-canvas')
   .on('load', () => {
@@ -61,12 +58,6 @@ const renderNeighbors = (adverts) => {
   });
 };
 
-const advertisements = getData((neighbors) => {
-  renderNeighbors(neighbors.slice(0, NEIGHBORS));
-});
-
-console.log(advertisements);
-
 const simpleIcon = L.icon({
   iconUrl: 'img/pin.svg',
   iconSize: [38, 95],
@@ -76,4 +67,4 @@ const simpleIcon = L.icon({
 
 //markerGroup.clearLayers();
 
-export {map};
+export {map, renderNeighbors};

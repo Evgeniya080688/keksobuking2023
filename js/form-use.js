@@ -1,3 +1,10 @@
+import { showAlert } from './util.js';
+import { sendData} from './api.js';
+
+const messSuccessTemplate = document.querySelector('#success')
+  .content
+  .querySelector('.success');
+
 const desactivateForm = () => {
   const formEl = document.querySelector('.ad-form');
   formEl.classList.add('ad-form--disabled');
@@ -28,8 +35,24 @@ const activateForm = () => {
   });
 };
 
+const resetForm = () => {
+  const formEl = document.querySelector('.ad-form');
+  formEl.classList.remove('ad-form--disabled');
+  const fieldElems = formEl.querySelectorAll('fieldset');
+  fieldElems.forEach((fieldElem) => {
+    fieldElem.setAttribute('disable', 'false');
+  });
+  const filterEl = document.querySelector('.map__filters');
+  filterEl.classList.remove('ad-form--disabled');
+  const filterElFields = filterEl.children;
+  Array.from(filterElFields).forEach((field) => {
+    field.setAttribute('disable', 'false');
+  });
+};
+
 //validate
 const adForm = document.querySelector('.ad-form');
+const submitButton = adForm.querySelector('.ad-form__submit');
 
 const pristine = new Pristine(adForm, {
   classTo: 'ad-form__element',
@@ -39,6 +62,7 @@ const pristine = new Pristine(adForm, {
   errorTextTag: 'span',
   errorTextClass: 'ad-form__error'
 });
+
 //valid address
 const address = adForm.querySelector('#address');
 address.value = '35.60439, 139.74142';
@@ -66,7 +90,6 @@ const roomsPlace = {
 
 const rooms = adForm.querySelector('#room_number');
 const places = adForm.querySelector('#capacity');
-console.log(places.value);
 
 function validatePlaces () {
   return roomsPlace[rooms.value].includes(places.value);
@@ -186,11 +209,38 @@ function onTimeChange(value) {
 timeIn.addEventListener('change', onTimeChange);
 timeOut.addEventListener('change', onTimeChange);
 
-adForm.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  pristine.validate();
-});
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Отправляю...';
+};
+
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+};
+
+const setUserFormSubmit = (onSuccess) => {
+  adForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    const isValid = pristine.validate();
+
+    if (isValid) {
+      blockSubmitButton();
+      sendData(
+        () => {
+          onSuccess();
+          showAlert(messSuccessTemplate);
+          unblockSubmitButton();
+        },
+        () => {
+          unblockSubmitButton();
+        },
+        new FormData(evt.target),
+      );
+    }
+  });
+};
 
 desactivateForm();
 
-export {adForm, address, activateForm, desactivateForm};
+export {adForm, address, activateForm, desactivateForm, setUserFormSubmit};

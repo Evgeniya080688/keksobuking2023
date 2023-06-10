@@ -1,5 +1,3 @@
-const ALERT_SHOW_TIME = 5000;
-
 const getRandomNum = (min, max) => {
   try {
     if (max === undefined) {
@@ -71,7 +69,17 @@ const getRandomArrayElement = (elements) => {
   }
 };
 
-const showAlert = (message) => {
+const onEscKeydown = (evt, alert) => {
+  if (evt.key === 'Escape') {
+    evt.preventDefault();
+    alert.remove();
+    document.removeEventListener('keydown', (e) => onEscKeydown(e,alert));
+  }
+};
+
+const ALERT_SHOW_TIME = 5000;
+
+const showErrorAlert = (message) => {
   const alertContainer = document.createElement('div');
   alertContainer.style.zIndex = 100;
   alertContainer.style.position = 'absolute';
@@ -93,4 +101,14 @@ const showAlert = (message) => {
   }, ALERT_SHOW_TIME);
 };
 
-export { showAlert, getRandomNum, getCoordinates, getRandomArrayElement };
+const showAlert = (template) => {
+  const alertContainer = template.cloneNode(true);
+  document.body.append(alertContainer);
+  alertContainer.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    alertContainer.remove();
+  });
+  document.addEventListener('keydown', (evt) => onEscKeydown(evt,alertContainer));
+};
+
+export { showAlert, showErrorAlert, getRandomNum, getCoordinates, getRandomArrayElement };

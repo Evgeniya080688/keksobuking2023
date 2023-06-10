@@ -1,8 +1,15 @@
-import { showAlert} from './util.js';
+import { showAlert, showErrorAlert } from './util.js';
+
+const messSuccessTemplate = document.querySelector('#success')
+  .content
+  .querySelector('.success');
+const messErrorTemplate = document.querySelector('#error')
+  .content
+  .querySelector('.error');
 
 const getData = (onSuccess) => {
   fetch(
-    'https://25.javascript.pages.academy/kekksobooking/data',
+    'https://25.javascript.pages.academy/keksobooking/data',
     {
       method: 'GET',
       credentials: 'same-origin',
@@ -12,19 +19,19 @@ const getData = (onSuccess) => {
       if (response.ok) {
         return response.json();
       }
-      showAlert('Ошибка сервера!');
+      showErrorAlert('Ошибка получения данных!');
     })
     .then((neighbors) => {
       onSuccess(neighbors);
     })
     .catch(() => {
-      showAlert('Ошибка сервера!');
+      showErrorAlert('Ошибка получения данных!');
     });
 };
 
 const sendData = (onSuccess, onFail, body) => {
   fetch(
-    'https://25.javascript.pages.academy/keksobooking/data',
+    'https://25.javascript.pages.academy/keksobooking',
     {
       method: 'POST',
       body,
@@ -34,11 +41,11 @@ const sendData = (onSuccess, onFail, body) => {
       if (response.ok) {
         onSuccess();
       } else {
-        onFail('Не удалось отправить форму. Попробуйте ещё раз');
+        showAlert(messErrorTemplate);
       }
     })
     .catch(() => {
-      onFail('Не удалось отправить форму. Попробуйте ещё раз');
+      showAlert(messErrorTemplate);
     });
 };
 
