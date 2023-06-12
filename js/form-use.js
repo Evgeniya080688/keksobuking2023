@@ -1,5 +1,6 @@
 import { showAlert } from './util.js';
 import { sendData} from './api.js';
+import { map } from './map.js';
 
 const messSuccessTemplate = document.querySelector('#success')
   .content
@@ -21,21 +22,6 @@ const desactivateForm = () => {
 };
 
 const activateForm = () => {
-  const formEl = document.querySelector('.ad-form');
-  formEl.classList.remove('ad-form--disabled');
-  const fieldElems = formEl.querySelectorAll('fieldset');
-  fieldElems.forEach((fieldElem) => {
-    fieldElem.setAttribute('disable', 'false');
-  });
-  const filterEl = document.querySelector('.map__filters');
-  filterEl.classList.remove('ad-form--disabled');
-  const filterElFields = filterEl.children;
-  Array.from(filterElFields).forEach((field) => {
-    field.setAttribute('disable', 'false');
-  });
-};
-
-const resetForm = () => {
   const formEl = document.querySelector('.ad-form');
   formEl.classList.remove('ad-form--disabled');
   const fieldElems = formEl.querySelectorAll('fieldset');
@@ -219,6 +205,55 @@ const unblockSubmitButton = () => {
   submitButton.textContent = 'Опубликовать';
 };
 
+const resetForm = () => {
+  const formEl = document.querySelector('.ad-form');
+  formEl.classList.remove('ad-form--disabled');
+  formEl.querySelector('#title').value = '';
+  slider.noUiSlider.set([5000, null]);
+  const featuresElems = formEl.querySelectorAll('.features__checkbox');
+  featuresElems.forEach((featureElem) => {
+    featureElem.checked = false;
+  });
+  const formFilterEl = document.querySelector('.map__filters');
+  const featuresFilterElems = formFilterEl.querySelectorAll('.map__checkbox');
+  featuresFilterElems.forEach((featureFilterElem) => {
+    featureFilterElem.checked = false;
+  });
+  document.querySelector('#type')
+    .querySelectorAll('option')[1]
+    .selected = true;
+  document.querySelector('#room_number')
+    .querySelectorAll('option')[0]
+    .selected = true;
+  document.querySelector('#capacity')
+    .querySelectorAll('option')[2]
+    .selected = true;
+  document.querySelector('#timein')
+    .querySelectorAll('option')[0]
+    .selected = true;
+  document.querySelector('#timeout')
+    .querySelectorAll('option')[0]
+    .selected = true;
+  const popup = document.querySelector('.leaflet-popup');
+  if (popup) {popup.style.display = 'none';}
+  formEl.querySelector('#description').value = '';
+  address.value = '35.60439, 139.74142';
+  document.querySelector('#housing-type')
+    .querySelectorAll('option')[0]
+    .selected = true;
+  document.querySelector('#housing-price')
+    .querySelectorAll('option')[0]
+    .selected = true;
+  document.querySelector('#housing-rooms')
+    .querySelectorAll('option')[0]
+    .selected = true;
+  document.querySelector('#housing-guests')
+    .querySelectorAll('option')[0]
+    .selected = true;
+  formEl.querySelectorAll('.pristine-error').forEach((error) => {error.style.display = 'none';});
+  //не хватает возвращения карты + поля с фото
+};
+
 const setUserFormSubmit = (onSuccess) => {
   adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
@@ -241,6 +276,8 @@ const setUserFormSubmit = (onSuccess) => {
   });
 };
 
+adForm.querySelector('.ad-form__reset').addEventListener('click', resetForm);
+
 desactivateForm();
 
-export {adForm, address, activateForm, desactivateForm, setUserFormSubmit};
+export {adForm, address, activateForm, desactivateForm, resetForm, setUserFormSubmit};

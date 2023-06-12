@@ -1,5 +1,5 @@
 import {map} from './map.js';
-import {setUserFormSubmit, activateForm} from './form-use.js';
+import {setUserFormSubmit, activateForm, resetForm} from './form-use.js';
 import {getData} from './api.js';
 import {renderNeighbors} from './map.js';
 
@@ -16,5 +16,5 @@ getData((neighbors) => {
   renderNeighbors(neighbors.slice(0, NEIGHBORS));
 });
 
-setUserFormSubmit(activateForm);
+setUserFormSubmit(resetForm);
 
