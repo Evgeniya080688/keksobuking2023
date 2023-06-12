@@ -1,10 +1,5 @@
-import { showAlert } from './util.js';
+import { showAlert, messSuccessTemplate, messErrorTemplate } from './util.js';
 import { sendData} from './api.js';
-import { map } from './map.js';
-
-const messSuccessTemplate = document.querySelector('#success')
-  .content
-  .querySelector('.success');
 
 const desactivateForm = () => {
   const formEl = document.querySelector('.ad-form');
@@ -83,11 +78,11 @@ function validatePlaces () {
 
 function getPlaceErrorMessage () {
   let msg='';
-  if (rooms.value == 1) {
-    msg = `В 1 комнате можно разместить только 1 гостя`;
-  } else if (rooms.value == 100) {
+  if (rooms.value === 1) {
+    msg = 'В 1 комнате можно разместить только 1 гостя';
+  } else if (rooms.value === 100) {
     msg = `100 комнат слишком много для ${places.value} гостей`;
-  } else if (places.value == 0) {
+  } else if (places.value === 0) {
     msg = `Не гостей не размещают в ${rooms.value} комнатах`;
   } else {
     msg = 'В 2х комнатах только 2 гостя';
@@ -268,6 +263,7 @@ const setUserFormSubmit = (onSuccess) => {
           unblockSubmitButton();
         },
         () => {
+          showAlert(messErrorTemplate);
           unblockSubmitButton();
         },
         new FormData(evt.target),

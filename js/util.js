@@ -69,6 +69,14 @@ const getRandomArrayElement = (elements) => {
   }
 };
 
+const messSuccessTemplate = document.querySelector('#success')
+  .content
+  .querySelector('.success');
+
+const messErrorTemplate = document.querySelector('#error')
+  .content
+  .querySelector('.error');
+
 const onEscKeydown = (evt, alert) => {
   if (evt.key === 'Escape') {
     evt.preventDefault();
@@ -111,4 +119,4 @@ const showAlert = (template) => {
   document.addEventListener('keydown', (evt) => onEscKeydown(evt,alertContainer));
 };
 
-export { showAlert, showErrorAlert, getRandomNum, getCoordinates, getRandomArrayElement };
+export { showAlert, showErrorAlert, getRandomNum, getCoordinates, getRandomArrayElement, messSuccessTemplate, messErrorTemplate };

@@ -1,11 +1,4 @@
-import { showAlert, showErrorAlert } from './util.js';
-
-const messSuccessTemplate = document.querySelector('#success')
-  .content
-  .querySelector('.success');
-const messErrorTemplate = document.querySelector('#error')
-  .content
-  .querySelector('.error');
+import { showAlert, showErrorAlert, messErrorTemplate } from './util.js';
 
 const getData = (onSuccess) => {
   fetch(
