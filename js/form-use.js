@@ -1,5 +1,6 @@
 import { showAlert, messSuccessTemplate, messErrorTemplate } from './util.js';
 import { sendData} from './api.js';
+import {map, marker} from './map.js';
 
 const desactivateForm = () => {
   const formEl = document.querySelector('.ad-form');
@@ -200,53 +201,26 @@ const unblockSubmitButton = () => {
   submitButton.textContent = 'Опубликовать';
 };
 
-const resetForm = () => {
-  const formEl = document.querySelector('.ad-form');
-  formEl.classList.remove('ad-form--disabled');
-  formEl.querySelector('#title').value = '';
-  slider.noUiSlider.set([5000, null]);
-  const featuresElems = formEl.querySelectorAll('.features__checkbox');
-  featuresElems.forEach((featureElem) => {
-    featureElem.checked = false;
-  });
-  const formFilterEl = document.querySelector('.map__filters');
-  const featuresFilterElems = formFilterEl.querySelectorAll('.map__checkbox');
-  featuresFilterElems.forEach((featureFilterElem) => {
-    featureFilterElem.checked = false;
-  });
-  document.querySelector('#type')
-    .querySelectorAll('option')[1]
-    .selected = true;
-  document.querySelector('#room_number')
-    .querySelectorAll('option')[0]
-    .selected = true;
-  document.querySelector('#capacity')
-    .querySelectorAll('option')[2]
-    .selected = true;
-  document.querySelector('#timein')
-    .querySelectorAll('option')[0]
-    .selected = true;
-  document.querySelector('#timeout')
-    .querySelectorAll('option')[0]
-    .selected = true;
-  const popup = document.querySelector('.leaflet-popup');
-  if (popup) {popup.style.display = 'none';}
-  formEl.querySelector('#description').value = '';
-  address.value = '35.60439, 139.74142';
-  document.querySelector('#housing-type')
-    .querySelectorAll('option')[0]
-    .selected = true;
-  document.querySelector('#housing-price')
-    .querySelectorAll('option')[0]
-    .selected = true;
-  document.querySelector('#housing-rooms')
-    .querySelectorAll('option')[0]
-    .selected = true;
-  document.querySelector('#housing-guests')
-    .querySelectorAll('option')[0]
-    .selected = true;
-  formEl.querySelectorAll('.pristine-error').forEach((error) => {error.style.display = 'none';});
-  //не хватает возвращения карты + поля с фото
+const resetForm = (mapEl,markerEl) => {
+  return function() {
+    mapEl.setView({
+      lat: 35.65422,
+      lng: 139.76305,
+    }, 12);
+    markerEl.setLatLng({
+      lat: 35.60439,
+      lng: 139.74142,
+    });
+    const formEl = document.querySelector('.ad-form');
+    formEl.classList.remove('ad-form--disabled');
+    formEl.reset();
+    formEl.querySelector('#address').value = '35.60439, 139.74142';
+    const formFilterEl = document.querySelector('.map__filters');
+    formFilterEl.reset();
+    const popup = document.querySelector('.leaflet-popup');
+    if (popup) {popup.style.display = 'none';}
+    //не хватает поля с фото
+  };
 };
 
 const setUserFormSubmit = (onSuccess) => {
@@ -272,7 +246,7 @@ const setUserFormSubmit = (onSuccess) => {
   });
 };
 
-adForm.querySelector('.ad-form__reset').addEventListener('click', resetForm);
+//adForm.querySelector('.ad-form__reset').addEventListener('click', resetForm(map,marker));
 
 desactivateForm();
 

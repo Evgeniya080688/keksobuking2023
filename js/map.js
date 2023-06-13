@@ -40,6 +40,10 @@ marker.on('moveend', (evt) => {
   address.value = `${evt.target.getLatLng().lat.toFixed(5)}, ${evt.target.getLatLng().lng.toFixed(5)}`;
 });
 
+map.on('unload', (evt) => {
+  console.log(evt);
+});
+
 const markerGroup = L.layerGroup().addTo(map);
 
 const createMarker = ({author, offer, location}) => {
@@ -64,8 +68,6 @@ const renderNeighbors = (adverts) => {
   });
 };
 
-
-
 //markerGroup.clearLayers();
 
-export {map, marker, renderNeighbors};
+export {map, marker, markerGroup, renderNeighbors};

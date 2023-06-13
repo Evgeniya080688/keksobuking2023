@@ -1,5 +1,5 @@
-import {map} from './map.js';
-import {setUserFormSubmit, activateForm, resetForm} from './form-use.js';
+import {map,marker} from './map.js';
+import {adForm, setUserFormSubmit, resetForm} from './form-use.js';
 import {getData} from './api.js';
 import {renderNeighbors} from './map.js';
 
@@ -16,5 +16,6 @@ getData((neighbors) => {
   renderNeighbors(neighbors.slice(0, NEIGHBORS));
 });
 
-setUserFormSubmit(resetForm);
+setUserFormSubmit(resetForm(map,marker));
+adForm.querySelector('.ad-form__reset').addEventListener('click', resetForm(map,marker));
 

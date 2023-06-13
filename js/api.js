@@ -17,8 +17,8 @@ const getData = (onSuccess) => {
     .then((neighbors) => {
       onSuccess(neighbors);
     })
-    .catch(() => {
-      showErrorAlert('Ошибка получения данных!');
+    .catch((error) => {
+      showErrorAlert(error.message);
     });
 };
 
