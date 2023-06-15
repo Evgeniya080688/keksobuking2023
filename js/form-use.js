@@ -1,6 +1,5 @@
 import { showAlert, messSuccessTemplate, messErrorTemplate } from './util.js';
 import { sendData} from './api.js';
-import {map, marker} from './map.js';
 
 const desactivateForm = () => {
   const formEl = document.querySelector('.ad-form');
