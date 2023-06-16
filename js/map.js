@@ -60,27 +60,46 @@ const createMarker = ({author, offer, location}) => {
     .addTo(markerGroup)
     .bindPopup(renderAdvert({offer,author}));
 };
-//filtred by type
-
-
-const filerType = (advert,filterParams) => {
+//filtred by ...
+const filerType = (advert, filterParams, featuresParams) => {
   markerGroup.clearLayers();
-  const form = document.querySelector('.map__filters');
-  const type = form.querySelector('#housing-type').value;
-  const suit = true;
-  console.log(filterParams);
-  if (('housing-type' in filterParams) && (advert.offer.type !== filterParams['housing-type'])){
+  const popup = document.querySelector('.leaflet-popup');
+  if (popup) {popup.style.display = 'none';}
+  const type = advert.offer.type;
+  const rooms = advert.offer.rooms;
+  const price = advert.offer.price;
+  const guests = advert.offer.guests;
+  const feach = advert.offer.guests;
+  if (('housing-type' in filterParams) && (type !== filterParams['housing-type'])){
     return false;
   }
-  if (('housing-rooms' in filterParams) && (advert.offer.rooms !== +filterParams['housing-rooms'])) {
+  if (('housing-rooms' in filterParams) && (rooms !== +filterParams['housing-rooms'])) {
     return false;
   }
-  if (('housing-price' in filterParams) && (advert.offer.rooms !== +filterParams['housing-rooms'])) {
-
-    //   return false;
+  if ('housing-price' in filterParams) {
+    switch (filterParams['housing-price']) {
+      case 'middle':
+        if (price < 10000 || price > 50000) { return false; }
+        break;
+      case 'low':
+        if (price >= 10000) { return false; }
+        break;
+      case 'high':
+        if (price < 50000) { return false; }
+        break;
+    }
   }
-  if (('housing-rooms' in filterParams) && (advert.offer.rooms !== +filterParams['housing-rooms'])) {
+  if (('housing-guests' in filterParams) && (guests !== +filterParams['housing-guests'])) {
     return false;}
+  const featuresList = advert.offer.features;
+  if (featuresParams && featuresList) {
+    featuresParams.forEach(
+      (featureParam) => {
+        const isExists = featuresList.indexOf(featureParam);
+        if (!isExists) { return false; }
+      }
+    );
+  }
   return true;
 };
 
@@ -88,10 +107,16 @@ const renderNeighbors = (adverts) => {
   const filterParams = [];
   const form = document.querySelector('.map__filters');
   const selectors = form.querySelectorAll('select');
+  const featuresParams = [];
+  const features = form.querySelectorAll('input[type="checkbox"]:checked');
+  features
+    .forEach( (feature) => {
+      featuresParams.push(feature.value);
+    });
   selectors
     .forEach((selector)=> {if (selector.value !== 'any') {filterParams[selector.name] = selector.value; }});
   adverts
-    .filter((advert) =>filerType(advert,filterParams))
+    .filter((advert) =>filerType(advert, filterParams, featuresParams))
     .slice(0, NEIGHBORS)
     .forEach((advert) => {
       createMarker(advert);
