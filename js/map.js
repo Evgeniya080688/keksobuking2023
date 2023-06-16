@@ -62,36 +62,26 @@ const createMarker = ({author, offer, location}) => {
 };
 //filtred by type
 
+
 const filerType = (advert,filterParams) => {
   markerGroup.clearLayers();
   const form = document.querySelector('.map__filters');
   const type = form.querySelector('#housing-type').value;
+  const suit = true;
+  console.log(filterParams);
+  if (('housing-type' in filterParams) && (advert.offer.type !== filterParams['housing-type'])){
+    return false;
+  }
+  if (('housing-rooms' in filterParams) && (advert.offer.rooms !== +filterParams['housing-rooms'])) {
+    return false;
+  }
+  if (('housing-price' in filterParams) && (advert.offer.rooms !== +filterParams['housing-rooms'])) {
 
-  filterParams.forEach((param, key) => {
-    let suit = true;
-    console.log(param);
-    switch (key) {
-      case 'housing-type':
-        suit = (advert.offer.type === param);
-        break;
-      case 'housing-price':
-        suit = (advert.offer.type === param);
-        break;
-      case 'housing-rooms':
-        suit = (advert.offer.rooms === param);
-        break;
-      case 'housing-guests':
-        suit = (advert.offer.guests === param);
-        break;
-    }
-    if (!suit) { return false; }
-  });
+    //   return false;
+  }
+  if (('housing-rooms' in filterParams) && (advert.offer.rooms !== +filterParams['housing-rooms'])) {
+    return false;}
   return true;
-  // if (type !== 'any') {
-  //   return advert.offer.type === type;
-  // } else {
-  //   return advert;
-  // }
 };
 
 const renderNeighbors = (adverts) => {
@@ -100,7 +90,6 @@ const renderNeighbors = (adverts) => {
   const selectors = form.querySelectorAll('select');
   selectors
     .forEach((selector)=> {if (selector.value !== 'any') {filterParams[selector.name] = selector.value; }});
-  console.log(filterParams);
   adverts
     .filter((advert) =>filerType(advert,filterParams))
     .slice(0, NEIGHBORS)
