@@ -14,6 +14,9 @@ const desactivateForm = () => {
   Array.from(filterElFields).forEach((field) => {
     field.setAttribute('disable', 'true');
   });
+  const sliderEl = formEl.querySelector('.ad-form__slider');
+  sliderEl.setAttribute('disabled', true);
+  console.log('work');
 };
 
 const activateForm = () => {
@@ -29,6 +32,8 @@ const activateForm = () => {
   Array.from(filterElFields).forEach((field) => {
     field.setAttribute('disable', 'false');
   });
+  const sliderEl = formEl.querySelector('.ad-form__slider');
+  sliderEl.removeAttribute('disabled');
 };
 
 //validate
@@ -97,6 +102,7 @@ pristine.addValidator(places, validatePlaces, getPlaceErrorMessage);
 //validate price
 
 const priceNight = adForm.querySelector('#price');
+
 const slider = adForm.querySelector('.ad-form__slider');
 noUiSlider.create(slider, {
   start: 5000,
@@ -119,10 +125,6 @@ noUiSlider.create(slider, {
 slider.noUiSlider.on('update', () => { // при изменений положения элементов управления слайдера изменяем соответствующие значения
   priceNight.value = slider.noUiSlider.get();
 });
-
-//slider.setAttribute('disabled', true);
-
-// slider.removeAttribute('disabled');
 
 priceNight.addEventListener('change', function () { // при изменении меньшего значения в input - меняем положение соответствующего элемента управления
   slider.noUiSlider.set(this.value);
@@ -246,7 +248,5 @@ const setUserFormSubmit = (onSuccess) => {
 };
 
 //adForm.querySelector('.ad-form__reset').addEventListener('click', resetForm(map,marker));
-
-desactivateForm();
 
 export {adForm, address, activateForm, desactivateForm, resetForm, setUserFormSubmit};

@@ -1,9 +1,8 @@
 import {map,marker} from './map.js';
-import {adForm, setUserFormSubmit, resetForm} from './form-use.js';
+import {adForm, setUserFormSubmit, resetForm, desactivateForm} from './form-use.js';
 import {getData} from './api.js';
 import {renderNeighbors} from './map.js';
-
-const NEIGHBORS = 10;
+import {setFilter} from './form-filter.js';
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -13,7 +12,12 @@ L.tileLayer(
 ).addTo(map);
 
 getData((neighbors) => {
-  renderNeighbors(neighbors.slice(0, NEIGHBORS));
+  renderNeighbors(neighbors);
+  setFilter(() => renderNeighbors(neighbors));
+});
+
+getData((neighbors) => {
+  console.log(neighbors);
 });
 
 setUserFormSubmit(resetForm(map,marker));

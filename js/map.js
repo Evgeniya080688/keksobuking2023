@@ -1,5 +1,8 @@
-import {address, activateForm} from './form-use.js';
+import {address, activateForm, desactivateForm} from './form-use.js';
 import {renderAdvert} from './cards.js';
+const NEIGHBORS = 10;
+
+desactivateForm();
 
 const map = L.map('map-canvas')
   .on('load', () => {
@@ -57,11 +60,53 @@ const createMarker = ({author, offer, location}) => {
     .addTo(markerGroup)
     .bindPopup(renderAdvert({offer,author}));
 };
+//filtred by type
+
+const filerType = (advert,filterParams) => {
+  markerGroup.clearLayers();
+  const form = document.querySelector('.map__filters');
+  const type = form.querySelector('#housing-type').value;
+
+  filterParams.forEach((param, key) => {
+    let suit = true;
+    console.log(param);
+    switch (key) {
+      case 'housing-type':
+        suit = (advert.offer.type === param);
+        break;
+      case 'housing-price':
+        suit = (advert.offer.type === param);
+        break;
+      case 'housing-rooms':
+        suit = (advert.offer.rooms === param);
+        break;
+      case 'housing-guests':
+        suit = (advert.offer.guests === param);
+        break;
+    }
+    if (!suit) { return false; }
+  });
+  return true;
+  // if (type !== 'any') {
+  //   return advert.offer.type === type;
+  // } else {
+  //   return advert;
+  // }
+};
 
 const renderNeighbors = (adverts) => {
-  adverts.forEach((advert) => {
-    createMarker(advert);
-  });
+  const filterParams = [];
+  const form = document.querySelector('.map__filters');
+  const selectors = form.querySelectorAll('select');
+  selectors
+    .forEach((selector)=> {if (selector.value !== 'any') {filterParams[selector.name] = selector.value; }});
+  console.log(filterParams);
+  adverts
+    .filter((advert) =>filerType(advert,filterParams))
+    .slice(0, NEIGHBORS)
+    .forEach((advert) => {
+      createMarker(advert);
+    });
 };
 
 //markerGroup.clearLayers();
