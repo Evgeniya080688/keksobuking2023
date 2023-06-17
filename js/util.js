@@ -164,4 +164,6 @@ function throttle (callback, delayBetweenFrames) {
   };
 }
 
-export { throttle, debounce, showAlert, showErrorAlert, getRandomNum, getCoordinates, getRandomArrayElement, messSuccessTemplate, messErrorTemplate };
+const hasAllElems = (arr1, arr2) => arr1.every((elem) => arr2.includes(elem));
+
+export { hasAllElems, throttle, debounce, showAlert, showErrorAlert, getRandomNum, getCoordinates, getRandomArrayElement, messSuccessTemplate, messErrorTemplate };

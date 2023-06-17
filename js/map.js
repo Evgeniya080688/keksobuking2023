@@ -1,5 +1,7 @@
 import {address, activateForm, desactivateForm} from './form-use.js';
 import {renderAdvert} from './cards.js';
+import {hasAllElems} from './util.js';
+
 const NEIGHBORS = 10;
 
 desactivateForm();
@@ -60,6 +62,7 @@ const createMarker = ({author, offer, location}) => {
     .addTo(markerGroup)
     .bindPopup(renderAdvert({offer,author}));
 };
+
 //filtred by ...
 const filerType = (advert, filterParams, featuresParams) => {
   markerGroup.clearLayers();
@@ -69,7 +72,7 @@ const filerType = (advert, filterParams, featuresParams) => {
   const rooms = advert.offer.rooms;
   const price = advert.offer.price;
   const guests = advert.offer.guests;
-  const feach = advert.offer.guests;
+  const featuresList = advert.offer.features;
   if (('housing-type' in filterParams) && (type !== filterParams['housing-type'])){
     return false;
   }
@@ -90,15 +93,12 @@ const filerType = (advert, filterParams, featuresParams) => {
     }
   }
   if (('housing-guests' in filterParams) && (guests !== +filterParams['housing-guests'])) {
-    return false;}
-  const featuresList = advert.offer.features;
-  if (featuresParams && featuresList) {
-    featuresParams.forEach(
-      (featureParam) => {
-        const isExists = featuresList.indexOf(featureParam);
-        if (!isExists) { return false; }
-      }
-    );
+    return false;
+  }
+  if (featuresList) {
+    if (!hasAllElems(featuresParams,featuresList)) { return false; }
+  } else {
+    return false;
   }
   return true;
 };
@@ -113,6 +113,7 @@ const renderNeighbors = (adverts) => {
     .forEach( (feature) => {
       featuresParams.push(feature.value);
     });
+  console.log(featuresParams);
   selectors
     .forEach((selector)=> {if (selector.value !== 'any') {filterParams[selector.name] = selector.value; }});
   adverts
@@ -122,7 +123,5 @@ const renderNeighbors = (adverts) => {
       createMarker(advert);
     });
 };
-
-//markerGroup.clearLayers();
 
 export {map, marker, markerGroup, renderNeighbors};

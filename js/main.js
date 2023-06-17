@@ -3,6 +3,9 @@ import {adForm, setUserFormSubmit, resetForm, desactivateForm} from './form-use.
 import {getData} from './api.js';
 import {renderNeighbors} from './map.js';
 import {setFilter} from './form-filter.js';
+import {debounce} from './util.js';
+
+const RERENDER_DELAY = 500;
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -13,11 +16,10 @@ L.tileLayer(
 
 getData((neighbors) => {
   renderNeighbors(neighbors);
-  setFilter(() => renderNeighbors(neighbors));
-});
-
-getData((neighbors) => {
-  console.log(neighbors);
+  setFilter(debounce(
+    () => renderNeighbors(neighbors),
+    RERENDER_DELAY,
+  ));
 });
 
 setUserFormSubmit(resetForm(map,marker));
