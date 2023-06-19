@@ -6,6 +6,10 @@ const preview = document.querySelector('.ad-form-header__preview img');
 const fileChooserRooms = document.querySelector('.ad-form__input');
 const containerPreview = document.querySelector('.ad-form__photo');
 
+
+const imgPreview =  new Image(70, 70);
+containerPreview.appendChild(imgPreview);
+
 fileChooserAvatar.addEventListener('change', () => {
   const file = fileChooserAvatar.files[0];
   const fileName = file.name.toLowerCase();
@@ -28,9 +32,7 @@ fileChooserRooms.addEventListener('change', () => {
   });
 
   if (matches) {
-    const imgPreview =  new Image(70, 70);
     imgPreview.src = URL.createObjectURL(file);
-    containerPreview.appendChild(imgPreview);
   }
 });
 

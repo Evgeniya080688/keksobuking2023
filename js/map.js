@@ -66,6 +66,14 @@ const createMarker = ({author, offer, location}) => {
 //filtred by ...
 const filerType = (advert, filterParams, featuresParams) => {
   markerGroup.clearLayers();
+  map.setView({
+    lat: 35.65422,
+    lng: 139.76305,
+  }, 12);
+  marker.setLatLng({
+    lat: 35.60439,
+    lng: 139.74142,
+  });
   const popup = document.querySelector('.leaflet-popup');
   if (popup) {popup.style.display = 'none';}
   const type = advert.offer.type;

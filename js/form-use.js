@@ -203,26 +203,33 @@ const unblockSubmitButton = () => {
 };
 
 const resetForm = (mapEl,markerEl) => {
-  mapEl.setView({
-    lat: 35.65422,
-    lng: 139.76305,
-  }, 12);
-  markerEl.setLatLng({
-    lat: 35.60439,
-    lng: 139.74142,
-  });
-  const formEl = document.querySelector('.ad-form');
-  formEl.classList.remove('ad-form--disabled');
-  formEl.reset();
-  formEl.querySelector('#address').value = '35.60439, 139.74142';
-  const formFilterEl = document.querySelector('.map__filters');
-  formFilterEl.reset();
-  const popup = document.querySelector('.leaflet-popup');
-  if (popup) {popup.style.display = 'none';}
-  const preview = document.querySelector('.ad-form-header__preview img');
-  preview.src = 'img/muffin-grey.svg';
-  const containerPreview = document.querySelector('.ad-form__photo');
-  containerPreview.removeChild(containerPreview.firstChild);
+  return function() {
+    mapEl.setView({
+      lat: 35.65422,
+      lng: 139.76305,
+    }, 12);
+    markerEl.setLatLng({
+      lat: 35.60439,
+      lng: 139.74142,
+    });
+    const formEl = document.querySelector('.ad-form');
+    formEl.classList.remove('ad-form--disabled');
+    formEl.reset();
+    formEl.querySelector('#address').value = '35.60439, 139.74142';
+    slider.noUiSlider.set([5000, null]);
+    const formFilterEl = document.querySelector('.map__filters');
+    formFilterEl.reset();
+    const popup = document.querySelector('.leaflet-popup');
+    if (popup) {
+      popup.style.display = 'none';
+    }
+    const preview = document.querySelector('.ad-form-header__preview img');
+    preview.src = 'img/muffin-grey.svg';
+    const containerPreview = document.querySelector('.ad-form__photo');
+    if (containerPreview.hasChildNodes()) {
+      containerPreview.removeChild(containerPreview.firstChild);
+    }
+  };
 };
 
 const setUserFormSubmit = (onSuccess) => {
