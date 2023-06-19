@@ -4,6 +4,7 @@ import {getData} from './api.js';
 import {renderNeighbors} from './map.js';
 import {setFilter} from './form-filter.js';
 import {debounce} from './util.js';
+import './avatar.js';
 
 const RERENDER_DELAY = 500;
 
