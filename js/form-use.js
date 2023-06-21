@@ -1,30 +1,52 @@
-import { showAlert, messSuccessTemplate, messErrorTemplate } from './util.js';
-import { sendData} from './api.js';
+import {showAlert, messSuccessTemplate, messErrorTemplate} from './util.js';
+import {getData, sendData} from './api.js';
+import {renderNeighbors, resetMap} from './map.js';
+
+const adFormEl = document.querySelector('.ad-form');
+const formFilterEl = document.querySelector('.map__filters');
+const submitButtonEl = adFormEl.querySelector('.ad-form__submit');
+const addressEl = adFormEl.querySelector('#address');
+const titleAdvEl = adFormEl.querySelector('#title');
+const roomsEl = adFormEl.querySelector('#room_number');
+const placesEl = adFormEl.querySelector('#capacity');
+const sliderEl = adFormEl.querySelector('.ad-form__slider');
+const timeInEl = adFormEl.querySelector('#timein');
+const timeOutEl = adFormEl.querySelector('#timeout');
+const priceNightEl = adFormEl.querySelector('#price');
+const typeLivingEl = adFormEl.querySelector('#type');
+const typePrice = {
+  'bungalow': 0,
+  'flat': 1000,
+  'hotel': 3000,
+  'house': 5000,
+  'palace': 10000
+};
+
+//set address
+addressEl.value = '35.60439, 139.74142';
+addressEl.readOnly = true;
 
 const desactivateForm = () => {
-  const formEl = document.querySelector('.ad-form');
-  formEl.classList.add('ad-form--disabled');
-  const fieldElems = formEl.querySelectorAll('fieldset');
+  adFormEl.classList.add('ad-form--disabled');
+  const fieldElems = adFormEl.querySelectorAll('fieldset');
   fieldElems.forEach((fieldElem) => {
     fieldElem.setAttribute('disable', 'true');
   });
-  const filterEl = document.querySelector('.map__filters');
-  filterEl.classList.add('ad-form--disabled');
-  const filterElFields = filterEl.children;
+  formFilterEl.classList.add('ad-form--disabled');
+  const filterElFields = formFilterEl.children;
   Array.from(filterElFields).forEach((field) => {
     field.setAttribute('disable', 'true');
   });
-  const sliderEl = formEl.querySelector('.ad-form__slider');
   sliderEl.setAttribute('disabled', true);
-  console.log('work');
 };
 
 const activateForm = () => {
+  addressEl.value = '35.60439, 139.74142';
   const formEl = document.querySelector('.ad-form');
   formEl.classList.remove('ad-form--disabled');
   const fieldElems = formEl.querySelectorAll('fieldset');
-  fieldElems.forEach((fieldElem) => {
-    fieldElem.setAttribute('disable', 'false');
+  fieldElems.forEach((fieldEl) => {
+    fieldEl.setAttribute('disable', 'false');
   });
   const filterEl = document.querySelector('.map__filters');
   filterEl.classList.remove('ad-form--disabled');
@@ -32,15 +54,11 @@ const activateForm = () => {
   Array.from(filterElFields).forEach((field) => {
     field.setAttribute('disable', 'false');
   });
-  const sliderEl = formEl.querySelector('.ad-form__slider');
   sliderEl.removeAttribute('disabled');
 };
 
 //validate
-const adForm = document.querySelector('.ad-form');
-const submitButton = adForm.querySelector('.ad-form__submit');
-
-const pristine = new Pristine(adForm, {
+const pristine = new Pristine(adFormEl, {
   classTo: 'ad-form__element',
   errorClass: 'ad-form__item--invalid',
   successClass: 'ad-form__item--valid',
@@ -49,20 +67,13 @@ const pristine = new Pristine(adForm, {
   errorTextClass: 'ad-form__error'
 });
 
-//valid address
-const address = adForm.querySelector('#address');
-address.value = '35.60439, 139.74142';
-address.readOnly = true;
-
 //valid title
 function validateTitle (value) {
   return value.length >= 30 && value.length <= 100;
 }
 
-const titleAdv = adForm.querySelector('#title');
-
 pristine.addValidator(
-  titleAdv,
+  titleAdvEl,
   validateTitle,
   'от 30 до 100 символов');
 
@@ -74,37 +85,27 @@ const roomsPlace = {
   '100': ['0']
 };
 
-const rooms = adForm.querySelector('#room_number');
-const places = adForm.querySelector('#capacity');
-
 function validatePlaces () {
-  return roomsPlace[rooms.value].includes(places.value);
+  return roomsPlace[roomsEl.value].includes(placesEl.value);
 }
 
-function getPlaceErrorMessage () {
-  let msg='';
-  if (rooms.value === 1) {
-    msg = 'В 1 комнате можно разместить только 1 гостя';
-  } else if (rooms.value === 100) {
-    msg = `100 комнат слишком много для ${places.value} гостей`;
-  } else if (places.value === 0) {
-    msg = `Не гостей не размещают в ${rooms.value} комнатах`;
-  } else {
-    msg = 'В 2х комнатах только 2 гостя';
-  }
-  return msg;
-}
+pristine.addValidator(roomsEl, validatePlaces, 'Число гостей не соответствует числу комнат');
+pristine.addValidator(placesEl, validatePlaces, 'Число комнат не соответствует числу гостей');
 
-pristine.addValidator(rooms, validatePlaces, getPlaceErrorMessage);
-pristine.addValidator(places, validatePlaces, getPlaceErrorMessage);
+const changeRooms = function() {
+  pristine.validate(placesEl);
+};
+const changePlaces = function() {
+  pristine.validate(roomsEl);
+};
 
+roomsEl.addEventListener('change',changeRooms);
+placesEl.addEventListener('change',changePlaces);
+
+//create slider
 //validate living type priceNight
 //validate price
-
-const priceNight = adForm.querySelector('#price');
-
-const slider = adForm.querySelector('.ad-form__slider');
-noUiSlider.create(slider, {
+noUiSlider.create(sliderEl, {
   start: 5000,
   step: 1,
   connect: 'lower',
@@ -122,121 +123,101 @@ noUiSlider.create(slider, {
   }
 });
 
-slider.noUiSlider.on('update', () => { // при изменений положения элементов управления слайдера изменяем соответствующие значения
-  priceNight.value = slider.noUiSlider.get();
+sliderEl.noUiSlider.on('update', () => { // при изменений положения элементов управления слайдера изменяем соответствующие значения
+  priceNightEl.value = sliderEl.noUiSlider.get();
+  pristine.validate(typeLivingEl);
+  pristine.validate(priceNightEl);
 });
 
-priceNight.addEventListener('change', function () { // при изменении меньшего значения в input - меняем положение соответствующего элемента управления
-  slider.noUiSlider.set(this.value);
-});
-
-priceNight.oninput = function() {
-  slider.noUiSlider.set(priceNight.value);
-};
-
-const typeLiving = adForm.querySelector('#type');
-const typePrice = {
-  'bungalow': 0,
-  'flat': 1000,
-  'hotel': 3000,
-  'house': 5000,
-  'palace': 10000
+priceNightEl.oninput = function() {
+  sliderEl.noUiSlider.set(priceNightEl.value);
+  pristine.validate(typeLivingEl);
+  pristine.validate(priceNightEl);
 };
 
 function validatePrice (value) {
-  return value.length && parseInt(value, 10) >= typePrice[typeLiving.value];
+  return value.length && parseInt(value, 10) >= typePrice[typeLivingEl.value];
 }
 
 function validateType (value) {
-  return value.length && priceNight.value >= typePrice[this.value];
+  return value.length && priceNightEl.value >= typePrice[this.value];
 }
 
 function messagePrice () {
-  const type = adForm.querySelector(`option[value='${typeLiving.value}']`).textContent;
-  return `Цена за тип жилья ${type} не может быть меньше ${typePrice[typeLiving.value]}`;
+  const type = adFormEl.querySelector(`option[value='${typeLivingEl.value}']`).textContent;
+  return `Цена за тип жилья ${type} не может быть меньше ${typePrice[typeLivingEl.value]}`;
 }
 
 function messageType () {
-  const type = adForm.querySelector(`option[value='${typeLiving.value}']`).textContent;
-  return `Тип жилья ${type} стоит от ${typePrice[typeLiving.value]}`;
+  const type = adFormEl.querySelector(`option[value='${typeLivingEl.value}']`).textContent;
+  return `Тип жилья ${type} стоит от ${typePrice[typeLivingEl.value]}`;
 }
 
-function onTypeChange (value) {
-  priceNight.placeholder = typePrice[this.value];
-  priceNight.value = typePrice[this.value];
-  slider.noUiSlider.set([priceNight.value, null]);
-  pristine.validate(priceNight);
+function onTypeChange () {
+  priceNightEl.placeholder = typePrice[this.value];
+  priceNightEl.value = typePrice[this.value];
+  sliderEl.noUiSlider.set([priceNightEl.value, null]);
+  pristine.validate(priceNightEl);
+  pristine.validate(typeLivingEl);
 }
 
-typeLiving.addEventListener('change', onTypeChange);
+typeLivingEl.addEventListener('change', onTypeChange);
 
 pristine.addValidator(
-  priceNight,
+  priceNightEl,
   validatePrice,
   messagePrice);
 
 pristine.addValidator(
-  typeLiving,
+  typeLivingEl,
   validateType,
   messageType);
 
 //validate time
-const timeIn = adForm.querySelector('#timein');
-const timeOut = adForm.querySelector('#timeout');
-
-function onTimeChange(value) {
-  timeIn.value = this.value;
-  timeOut.value = this.value;
+function onTimeChange() {
+  timeInEl.value = this.value;
+  timeOutEl.value = this.value;
 }
 
-timeIn.addEventListener('change', onTimeChange);
-timeOut.addEventListener('change', onTimeChange);
+timeInEl.addEventListener('change', onTimeChange);
+timeOutEl.addEventListener('change', onTimeChange);
 
 const blockSubmitButton = () => {
-  submitButton.disabled = true;
-  submitButton.textContent = 'Отправляю...';
+  submitButtonEl.disabled = true;
+  submitButtonEl.textContent = 'Отправляю...';
 };
 
 const unblockSubmitButton = () => {
-  submitButton.disabled = false;
-  submitButton.textContent = 'Опубликовать';
+  submitButtonEl.disabled = false;
+  submitButtonEl.textContent = 'Опубликовать';
 };
 
-const resetForm = (mapEl,markerEl) => {
-  return function() {
-    mapEl.setView({
-      lat: 35.65422,
-      lng: 139.76305,
-    }, 12);
-    markerEl.setLatLng({
-      lat: 35.60439,
-      lng: 139.74142,
-    });
-    const formEl = document.querySelector('.ad-form');
-    formEl.classList.remove('ad-form--disabled');
-    formEl.reset();
-    formEl.querySelector('#address').value = '35.60439, 139.74142';
-    slider.noUiSlider.set([5000, null]);
-    const formFilterEl = document.querySelector('.map__filters');
-    formFilterEl.reset();
-    const popup = document.querySelector('.leaflet-popup');
-    if (popup) {
-      popup.style.display = 'none';
-    }
-    const preview = document.querySelector('.ad-form-header__preview img');
-    preview.src = 'img/muffin-grey.svg';
-    const containerPreview = document.querySelector('.ad-form__photo');
-    if (containerPreview.hasChildNodes()) {
-      containerPreview.removeChild(containerPreview.firstChild);
-    }
-  };
+const resetForm = () => {
+  getData((neighbors) => {
+    renderNeighbors(neighbors);
+  });
+  resetMap();
+  adFormEl.classList.remove('ad-form--disabled');
+  adFormEl.reset();
+  addressEl.value = '35.60439, 139.74142';
+  sliderEl.noUiSlider.set([5000, null]);
+  formFilterEl.reset();
+  const popup = document.querySelector('.leaflet-popup');
+  if (popup) {
+    popup.style.display = 'none';
+  }
+  const preview = document.querySelector('.ad-form-header__preview img');
+  preview.src = 'img/muffin-grey.svg';
+  const containerPreview = document.querySelector('.ad-form__photo');
+  if (containerPreview.querySelector('img')) {
+    containerPreview.querySelector('img').remove();
+  }
 };
 
 const setUserFormSubmit = (onSuccess) => {
-  adForm.addEventListener('submit', (evt) => {
+  adFormEl.addEventListener('submit', (evt) => {
     evt.preventDefault();
     const isValid = pristine.validate();
-
     if (isValid) {
       blockSubmitButton();
       sendData(
@@ -255,6 +236,6 @@ const setUserFormSubmit = (onSuccess) => {
   });
 };
 
-//adForm.querySelector('.ad-form__reset').addEventListener('click', resetForm(map,marker));
+adFormEl.querySelector('.ad-form__reset').addEventListener('click', resetForm);
 
-export {adForm, address, activateForm, desactivateForm, resetForm, setUserFormSubmit};
+export {adFormEl, addressEl, activateForm, desactivateForm, resetForm, setUserFormSubmit};

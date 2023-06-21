@@ -1,5 +1,13 @@
 const ALERT_SHOW_TIME = 5000;
 
+const messSuccessTemplate = document.querySelector('#success')
+  .content
+  .querySelector('.success');
+
+const messErrorTemplate = document.querySelector('#error')
+  .content
+  .querySelector('.error');
+
 const getRandomNum = (min, max) => {
   try {
     if (max === undefined) {
@@ -70,14 +78,6 @@ const getRandomArrayElement = (elements) => {
     return elements[getRandomNum(0, elements.length - 1)];
   }
 };
-
-const messSuccessTemplate = document.querySelector('#success')
-  .content
-  .querySelector('.success');
-
-const messErrorTemplate = document.querySelector('#error')
-  .content
-  .querySelector('.error');
 
 const onEscKeydown = (evt, alert) => {
   if (evt.key === 'Escape') {

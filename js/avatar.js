@@ -5,10 +5,7 @@ const preview = document.querySelector('.ad-form-header__preview img');
 
 const fileChooserRooms = document.querySelector('.ad-form__input');
 const containerPreview = document.querySelector('.ad-form__photo');
-
-
 const imgPreview =  new Image(70, 70);
-containerPreview.appendChild(imgPreview);
 
 fileChooserAvatar.addEventListener('change', () => {
   const file = fileChooserAvatar.files[0];
@@ -32,6 +29,7 @@ fileChooserRooms.addEventListener('change', () => {
   });
 
   if (matches) {
+    containerPreview.appendChild(imgPreview);
     imgPreview.src = URL.createObjectURL(file);
   }
 });

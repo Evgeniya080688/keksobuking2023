@@ -1,6 +1,6 @@
-const formFilter = document.querySelector('.map__filters');
-const selectors = formFilter.querySelectorAll('select');
-const checkboxes = formFilter.querySelectorAll('.map__checkbox');
+const formFilterEl = document.querySelector('.map__filters');
+const selectors = formFilterEl.querySelectorAll('select');
+const checkboxes = formFilterEl.querySelectorAll('.map__checkbox');
 
 const setFilter = (cb) => {
   selectors.forEach((selector) => {
@@ -11,7 +11,6 @@ const setFilter = (cb) => {
   checkboxes.forEach((checkbox) => {
     checkbox.addEventListener('change', () => {
       cb();
-      console.log('change check');
     });
   });
 };
